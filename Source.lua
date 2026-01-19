@@ -4,10 +4,8 @@ local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
 local CoreGui = game:GetService("CoreGui")
 
--- // 1. SINGLETON PATTERN (Removes old instance)
 if CoreGui:FindFirstChild("XonixUI") then
 	CoreGui.XonixUI:Destroy()
 end
@@ -20,22 +18,23 @@ function Xonix:Create(titleName)
 	local Window = {}
 	local Elements = {}
 	local UI_Open = true
+	local ToggleKey = Enum.KeyCode.RightControl
 	
 	local ScreenGui = Instance.new("ScreenGui")
 	ScreenGui.Name = "XonixUI"
 	ScreenGui.Parent = CoreGui
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-	-- // MAIN FRAME
 	local MainFrame = Instance.new("Frame")
 	MainFrame.Name = "MainFrame"
 	MainFrame.Parent = ScreenGui
 	MainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 	MainFrame.BorderSizePixel = 0
-	MainFrame.Position = UDim2.new(0.5, -415, 0.5, -202)
+	MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 	MainFrame.Size = UDim2.new(0, 831, 0, 405)
+	MainFrame.ClipsDescendants = true
 	
-	-- // DRAGGING
 	local dragging, dragInput, dragStart, startPos
 	local dragSpeed = 0.12
 	
@@ -68,48 +67,58 @@ function Xonix:Create(titleName)
 		end
 	end)
 
-	-- // UI TOGGLE ANIMATION (RightControl)
+	function Window:SetToggleKey(key)
+		ToggleKey = key
+	end
+
 	UserInputService.InputBegan:Connect(function(input)
-		if input.KeyCode == Enum.KeyCode.RightControl then
+		if input.KeyCode == ToggleKey then
 			UI_Open = not UI_Open
 			if UI_Open then
 				MainFrame.Visible = true
-				tween(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 831, 0, 405), BackgroundTransparency = 0})
-				for _, v in pairs(MainFrame:GetDescendants()) do
-					if v:IsA("GuiObject") then tween(v, TweenInfo.new(0.3), {BackgroundTransparency = v.Name == "Shadow" and 1 or (v.BackgroundTransparency == 1 and 1 or v.BackgroundColor3 == Color3.fromRGB(18,18,18) and 0 or 0), GroupTransparency = 0}) end
-					if v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox") then tween(v, TweenInfo.new(0.3), {TextTransparency = 0}) end
-				end
+				tween(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 831, 0, 405)})
 			else
-				tween(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 831, 0, 0), BackgroundTransparency = 1})
-				for _, v in pairs(MainFrame:GetDescendants()) do
-					if v:IsA("GuiObject") then tween(v, TweenInfo.new(0.3), {BackgroundTransparency = 1}) end
-					if v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox") then tween(v, TweenInfo.new(0.3), {TextTransparency = 1}) end
-				end
-				task.wait(0.3)
+				tween(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
+				task.wait(0.35)
 				if not UI_Open then MainFrame.Visible = false end
 			end
 		end
 	end)
 
-	-- // CONSOLE (Moved to Top Left)
 	local ConsoleFrame = Instance.new("Frame")
 	ConsoleFrame.Name = "workspacee"
 	ConsoleFrame.Parent = MainFrame
 	ConsoleFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
 	ConsoleFrame.BorderSizePixel = 0
-	ConsoleFrame.Position = UDim2.new(0, 15, 0, 15) -- ROOF
+	ConsoleFrame.Position = UDim2.new(0, 15, 0, 15)
 	ConsoleFrame.Size = UDim2.new(0, 283, 0, 325)
 	
 	local ConsoleCorner = Instance.new("UICorner")
 	ConsoleCorner.CornerRadius = UDim.new(0, 4)
 	ConsoleCorner.Parent = ConsoleFrame
 
-	-- // PROFILE (Moved to Bottom Left)
+	local ConsoleText = Instance.new("TextLabel")
+	ConsoleText.Parent = ConsoleFrame
+	ConsoleText.Size = UDim2.new(1, -20, 1, -20)
+	ConsoleText.Position = UDim2.new(0, 10, 0, 10)
+	ConsoleText.BackgroundTransparency = 1
+	ConsoleText.TextColor3 = Color3.fromRGB(150, 150, 150)
+	ConsoleText.Font = Enum.Font.Code
+	ConsoleText.TextSize = 14
+	ConsoleText.TextXAlignment = Enum.TextXAlignment.Left
+	ConsoleText.TextYAlignment = Enum.TextXAlignment.Top
+	ConsoleText.TextWrapped = true
+	ConsoleText.Text = "> System Ready...\n> Waiting for user input."
+
+	local function UpdateConsole(desc)
+		ConsoleText.Text = "> " .. desc
+	end
+
 	local ProfileContainer = Instance.new("Frame")
 	ProfileContainer.Name = "ProfileContainer"
 	ProfileContainer.Parent = MainFrame
 	ProfileContainer.BackgroundTransparency = 1
-	ProfileContainer.Position = UDim2.new(0, 15, 1, -60) -- BOTTOM
+	ProfileContainer.Position = UDim2.new(0, 15, 1, -60)
 	ProfileContainer.Size = UDim2.new(0, 283, 0, 50)
 
 	local AvatarImage = Instance.new("ImageLabel")
@@ -138,12 +147,11 @@ function Xonix:Create(titleName)
 	UserLabel.TextXAlignment = Enum.TextXAlignment.Left
 	UserLabel.Text = LocalPlayer.Name
 
-	-- // SEARCH BAR (Moved to Top Right)
 	local SearchFrame = Instance.new("Frame")
 	SearchFrame.Name = "SearchFrame"
 	SearchFrame.Parent = MainFrame
 	SearchFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
-	SearchFrame.Position = UDim2.new(0, 310, 0, 15) -- ROOF
+	SearchFrame.Position = UDim2.new(0, 310, 0, 15)
 	SearchFrame.Size = UDim2.new(0, 505, 0, 30)
 	SearchFrame.BorderSizePixel = 0
 	
@@ -164,14 +172,13 @@ function Xonix:Create(titleName)
 	SearchBox.TextSize = 13
 	SearchBox.TextXAlignment = Enum.TextXAlignment.Left
 
-	-- // CONTAINER (Under Search)
 	local Container = Instance.new("ScrollingFrame")
 	Container.Name = "ElementsContainer"
 	Container.Parent = MainFrame
 	Container.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 	Container.BackgroundTransparency = 1
 	Container.Position = UDim2.new(0, 310, 0, 50)
-	Container.Size = UDim2.new(0, 505, 0, 340) -- Taller since it goes to bottom
+	Container.Size = UDim2.new(0, 505, 0, 340)
 	Container.ScrollBarThickness = 2
 	Container.ScrollBarImageColor3 = Color3.fromRGB(40, 40, 40)
 	
@@ -195,9 +202,7 @@ function Xonix:Create(titleName)
 		end
 	end)
 
-	-- // ELEMENT FUNCTIONS
-	
-	function Window:Button(text, callback)
+	function Window:Button(text, desc, callback)
 		local BtnFrame = Instance.new("Frame")
 		BtnFrame.Parent = Container
 		BtnFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
@@ -230,10 +235,13 @@ function Xonix:Create(titleName)
 			tween(BtnFrame, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(28, 28, 28)})
 		end)
 		
+		Btn.MouseEnter:Connect(function() UpdateConsole(desc) end)
+		Btn.MouseLeave:Connect(function() UpdateConsole("Idling...") end)
+		
 		table.insert(Elements, {Frame = BtnFrame, Text = text})
 	end
 
-	function Window:Toggle(text, callback)
+	function Window:Toggle(text, desc, callback)
 		local toggled = false
 		local TogFrame = Instance.new("Frame")
 		TogFrame.Parent = Container
@@ -287,6 +295,9 @@ function Xonix:Create(titleName)
 		Trigger.BackgroundTransparency = 1
 		Trigger.Text = ""
 		
+		Trigger.MouseEnter:Connect(function() UpdateConsole(desc) end)
+		Trigger.MouseLeave:Connect(function() UpdateConsole("Idling...") end)
+		
 		Trigger.MouseButton1Click:Connect(function()
 			toggled = not toggled
 			pcall(callback, toggled)
@@ -301,7 +312,7 @@ function Xonix:Create(titleName)
 		table.insert(Elements, {Frame = TogFrame, Text = text})
 	end
 
-	function Window:Slider(text, min, max, callback)
+	function Window:Slider(text, desc, min, max, callback)
 		local SlideFrame = Instance.new("Frame")
 		SlideFrame.Parent = Container
 		SlideFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
@@ -364,6 +375,9 @@ function Xonix:Create(titleName)
 		SlideBtn.BackgroundTransparency = 1
 		SlideBtn.Text = ""
 		
+		SlideBtn.MouseEnter:Connect(function() UpdateConsole(desc) end)
+		SlideBtn.MouseLeave:Connect(function() UpdateConsole("Idling...") end)
+		
 		local dragging = false
 		local function update(input)
 			local pos = UDim2.new(math.clamp((input.Position.X - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X, 0, 1), 0, 1, 0)
@@ -384,7 +398,7 @@ function Xonix:Create(titleName)
 		table.insert(Elements, {Frame = SlideFrame, Text = text})
 	end
 
-	function Window:Keybind(text, defaultKey, callback)
+	function Window:Keybind(text, desc, defaultKey, callback)
 		local KeybindFrame = Instance.new("Frame")
 		KeybindFrame.Parent = Container
 		KeybindFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
@@ -424,6 +438,9 @@ function Xonix:Create(titleName)
 		local BindCorner = Instance.new("UICorner")
 		BindCorner.CornerRadius = UDim.new(0, 4)
 		BindCorner.Parent = BindBtn
+		
+		BindBtn.MouseEnter:Connect(function() UpdateConsole(desc) end)
+		BindBtn.MouseLeave:Connect(function() UpdateConsole("Idling...") end)
 		
 		local binding = false
 		local currentKey = defaultKey
