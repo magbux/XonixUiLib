@@ -19,15 +19,12 @@ function Xonix:Create(titleName)
 	local MainFrame = Instance.new("Frame")
 	MainFrame.Name = "MainFrame"
 	MainFrame.Parent = ScreenGui
-	MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	MainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 	MainFrame.BorderSizePixel = 0
 	MainFrame.Position = UDim2.new(0.5, -415, 0.5, -202)
 	MainFrame.Size = UDim2.new(0, 831, 0, 405)
 	
-	local MainCorner = Instance.new("UICorner")
-	MainCorner.CornerRadius = UDim.new(0, 8)
-	MainCorner.Parent = MainFrame
-
+	-- Dragging Logic
 	local dragging, dragInput, dragStart, startPos
 	MainFrame.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -53,7 +50,7 @@ function Xonix:Create(titleName)
 
 	local UserLabel = Instance.new("TextLabel")
 	UserLabel.Parent = MainFrame
-	UserLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	UserLabel.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 	UserLabel.BackgroundTransparency = 1
 	UserLabel.Position = UDim2.new(0, 75, 0, 15)
 	UserLabel.Size = UDim2.new(0, 200, 0, 35)
@@ -80,24 +77,24 @@ function Xonix:Create(titleName)
 	local ConsoleFrame = Instance.new("Frame")
 	ConsoleFrame.Name = "workspacee"
 	ConsoleFrame.Parent = MainFrame
-	ConsoleFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	ConsoleFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
 	ConsoleFrame.BorderSizePixel = 0
 	ConsoleFrame.Position = UDim2.new(0, 15, 0, 65)
 	ConsoleFrame.Size = UDim2.new(0, 283, 0, 325)
 	
 	local ConsoleCorner = Instance.new("UICorner")
-	ConsoleCorner.CornerRadius = UDim.new(0, 6)
+	ConsoleCorner.CornerRadius = UDim.new(0, 4)
 	ConsoleCorner.Parent = ConsoleFrame
 
 	local Container = Instance.new("ScrollingFrame")
 	Container.Name = "ElementsContainer"
 	Container.Parent = MainFrame
-	Container.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+	Container.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 	Container.BackgroundTransparency = 1
 	Container.Position = UDim2.new(0, 310, 0, 65)
 	Container.Size = UDim2.new(0, 505, 0, 325)
 	Container.ScrollBarThickness = 3
-	Container.ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60)
+	Container.ScrollBarImageColor3 = Color3.fromRGB(50, 50, 50)
 	
 	local UIList = Instance.new("UIListLayout")
 	UIList.Parent = Container
@@ -111,7 +108,7 @@ function Xonix:Create(titleName)
 	function Window:Button(text, callback)
 		local BtnFrame = Instance.new("Frame")
 		BtnFrame.Parent = Container
-		BtnFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+		BtnFrame.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
 		BtnFrame.Size = UDim2.new(1, -5, 0, 40)
 		BtnFrame.BorderSizePixel = 0
 		
@@ -122,7 +119,7 @@ function Xonix:Create(titleName)
 		local BtnStroke = Instance.new("UIStroke")
 		BtnStroke.Parent = BtnFrame
 		BtnStroke.Thickness = 1
-		BtnStroke.Color = Color3.fromRGB(60, 60, 60)
+		BtnStroke.Color = Color3.fromRGB(45, 45, 45)
 		BtnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 		
 		local Btn = Instance.new("TextButton")
@@ -136,9 +133,9 @@ function Xonix:Create(titleName)
 
 		Btn.MouseButton1Click:Connect(function()
 			pcall(callback)
-			tween(BtnFrame, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(60, 60, 60)})
+			tween(BtnFrame, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)})
 			task.wait(0.1)
-			tween(BtnFrame, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)})
+			tween(BtnFrame, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(32, 32, 32)})
 		end)
 	end
 
@@ -147,7 +144,7 @@ function Xonix:Create(titleName)
 		
 		local TogFrame = Instance.new("Frame")
 		TogFrame.Parent = Container
-		TogFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+		TogFrame.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
 		TogFrame.Size = UDim2.new(1, -5, 0, 40)
 		TogFrame.BorderSizePixel = 0
 		
@@ -158,7 +155,7 @@ function Xonix:Create(titleName)
 		local TogStroke = Instance.new("UIStroke")
 		TogStroke.Parent = TogFrame
 		TogStroke.Thickness = 1
-		TogStroke.Color = Color3.fromRGB(60, 60, 60)
+		TogStroke.Color = Color3.fromRGB(45, 45, 45)
 		
 		local TogTitle = Instance.new("TextLabel")
 		TogTitle.Parent = TogFrame
@@ -175,7 +172,7 @@ function Xonix:Create(titleName)
 		IndicatorOuter.Parent = TogFrame
 		IndicatorOuter.Size = UDim2.new(0, 40, 0, 20)
 		IndicatorOuter.Position = UDim2.new(1, -50, 0.5, -10)
-		IndicatorOuter.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		IndicatorOuter.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 		
 		local IndCorner = Instance.new("UICorner")
 		IndCorner.CornerRadius = UDim.new(1, 0)
@@ -185,7 +182,7 @@ function Xonix:Create(titleName)
 		IndicatorInner.Parent = IndicatorOuter
 		IndicatorInner.Size = UDim2.new(0, 16, 0, 16)
 		IndicatorInner.Position = UDim2.new(0, 2, 0.5, -8)
-		IndicatorInner.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+		IndicatorInner.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 		
 		local IndInCorner = Instance.new("UICorner")
 		IndInCorner.CornerRadius = UDim.new(1, 0)
@@ -205,8 +202,8 @@ function Xonix:Create(titleName)
 				tween(IndicatorOuter, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 170, 255)})
 				tween(IndicatorInner, TweenInfo.new(0.2), {Position = UDim2.new(1, -18, 0.5, -8), BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
 			else
-				tween(IndicatorOuter, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)})
-				tween(IndicatorInner, TweenInfo.new(0.2), {Position = UDim2.new(0, 2, 0.5, -8), BackgroundColor3 = Color3.fromRGB(150, 150, 150)})
+				tween(IndicatorOuter, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(20, 20, 20)})
+				tween(IndicatorInner, TweenInfo.new(0.2), {Position = UDim2.new(0, 2, 0.5, -8), BackgroundColor3 = Color3.fromRGB(100, 100, 100)})
 			end
 		end)
 	end
@@ -214,7 +211,7 @@ function Xonix:Create(titleName)
 	function Window:Slider(text, min, max, callback)
 		local SlideFrame = Instance.new("Frame")
 		SlideFrame.Parent = Container
-		SlideFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+		SlideFrame.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
 		SlideFrame.Size = UDim2.new(1, -5, 0, 55)
 		SlideFrame.BorderSizePixel = 0
 		
@@ -225,7 +222,7 @@ function Xonix:Create(titleName)
 		local SlideStroke = Instance.new("UIStroke")
 		SlideStroke.Parent = SlideFrame
 		SlideStroke.Thickness = 1
-		SlideStroke.Color = Color3.fromRGB(60, 60, 60)
+		SlideStroke.Color = Color3.fromRGB(45, 45, 45)
 		
 		local SlideTitle = Instance.new("TextLabel")
 		SlideTitle.Parent = SlideFrame
@@ -251,7 +248,7 @@ function Xonix:Create(titleName)
 		
 		local SliderBar = Instance.new("Frame")
 		SliderBar.Parent = SlideFrame
-		SliderBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		SliderBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 		SliderBar.Size = UDim2.new(1, -24, 0, 6)
 		SliderBar.Position = UDim2.new(0, 12, 0, 35)
 		
