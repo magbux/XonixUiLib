@@ -4,7 +4,6 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 
--- Utility function for smooth animations
 local function tween(object, info, goals)
 	TweenService:Create(object, info, goals):Play()
 end
@@ -12,22 +11,19 @@ end
 function Xonix:Create(titleName)
 	local Window = {}
 	
-	-- // 1. Main ScreenGui
 	local ScreenGui = Instance.new("ScreenGui")
 	ScreenGui.Name = "XonixUI"
-	ScreenGui.Parent = game:GetService("CoreGui") -- Or PlayerGui if you prefer
+	ScreenGui.Parent = game:GetService("CoreGui")
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-	-- // 2. Main Frame (The Background)
 	local MainFrame = Instance.new("Frame")
 	MainFrame.Name = "MainFrame"
 	MainFrame.Parent = ScreenGui
 	MainFrame.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
 	MainFrame.BorderSizePixel = 0
-	MainFrame.Position = UDim2.new(0.5, -415, 0.5, -202) -- Centered
+	MainFrame.Position = UDim2.new(0.5, -415, 0.5, -202)
 	MainFrame.Size = UDim2.new(0, 831, 0, 405)
 	
-	-- Dragging Logic
 	local dragging, dragInput, dragStart, startPos
 	MainFrame.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -51,7 +47,6 @@ function Xonix:Create(titleName)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
 	end)
 
-	-- // 3. Username Label (Scripted to fetch)
 	local UserLabel = Instance.new("TextLabel")
 	UserLabel.Parent = MainFrame
 	UserLabel.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
@@ -62,25 +57,22 @@ function Xonix:Create(titleName)
 	UserLabel.TextSize = 18
 	UserLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
 	UserLabel.TextXAlignment = Enum.TextXAlignment.Left
-	UserLabel.Text = "Welcome, " .. LocalPlayer.Name -- FETCHED USERNAME
+	UserLabel.Text = "Welcome, " .. LocalPlayer.Name
 
-	-- // 4. Avatar Image (Scripted to fetch)
 	local AvatarImage = Instance.new("ImageLabel")
 	AvatarImage.Parent = MainFrame
 	AvatarImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	AvatarImage.BackgroundTransparency = 1
 	AvatarImage.Position = UDim2.new(0, 10, 0, 0)
 	AvatarImage.Size = UDim2.new(0, 50, 0, 50)
-	-- FETCHED AVATAR
+	
 	local content, isReady = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
 	AvatarImage.Image = content
 	
-	-- Rounded corner for image
 	local UICornerAvg = Instance.new("UICorner")
 	UICornerAvg.CornerRadius = UDim.new(1, 0)
 	UICornerAvg.Parent = AvatarImage
 
-	-- // 5. The "Workspacee" (Console area)
 	local ConsoleFrame = Instance.new("Frame")
 	ConsoleFrame.Name = "workspacee"
 	ConsoleFrame.Parent = MainFrame
@@ -89,8 +81,6 @@ function Xonix:Create(titleName)
 	ConsoleFrame.Position = UDim2.new(0, 10, 0, 60)
 	ConsoleFrame.Size = UDim2.new(0, 283, 0, 335)
 
-	-- // 6. Element Container (Where Buttons/Sliders go)
-	-- We place this to the right of the ConsoleFrame
 	local Container = Instance.new("ScrollingFrame")
 	Container.Name = "ElementsContainer"
 	Container.Parent = MainFrame
@@ -105,16 +95,10 @@ function Xonix:Create(titleName)
 	UIList.SortOrder = Enum.SortOrder.LayoutOrder
 	UIList.Padding = UDim.new(0, 5)
 
-	-- Update canvas size automatically
 	UIList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		Container.CanvasSize = UDim2.new(0, 0, 0, UIList.AbsoluteContentSize.Y)
 	end)
 
-	-- ---------------------------------------------------------
-	-- // ELEMENT FUNCTIONS
-	-- ---------------------------------------------------------
-
-	-- // BUTTON
 	function Window:Button(text, callback)
 		local BtnFrame = Instance.new("Frame")
 		BtnFrame.Parent = Container
@@ -133,14 +117,12 @@ function Xonix:Create(titleName)
 
 		Btn.MouseButton1Click:Connect(function()
 			pcall(callback)
-			-- Click Animation
 			tween(BtnFrame, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(60, 60, 60)})
 			task.wait(0.1)
 			tween(BtnFrame, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)})
 		end)
 	end
 
-	-- // TOGGLE
 	function Window:Toggle(text, callback)
 		local toggled = false
 		
@@ -165,7 +147,7 @@ function Xonix:Create(titleName)
 		Indicator.Parent = TogFrame
 		Indicator.Size = UDim2.new(0, 25, 0, 25)
 		Indicator.Position = UDim2.new(1, -35, 0.5, -12)
-		Indicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50) -- Red (Off)
+		Indicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
 		Indicator.BorderSizePixel = 0
 		
 		local Trigger = Instance.new("TextButton")
@@ -179,14 +161,13 @@ function Xonix:Create(titleName)
 			pcall(callback, toggled)
 			
 			if toggled then
-				tween(Indicator, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 255, 50)}) -- Green (On)
+				tween(Indicator, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 255, 50)})
 			else
-				tween(Indicator, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 50, 50)}) -- Red (Off)
+				tween(Indicator, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 50, 50)})
 			end
 		end)
 	end
 
-	-- // SLIDER
 	function Window:Slider(text, min, max, callback)
 		local SlideFrame = Instance.new("Frame")
 		SlideFrame.Parent = Container
@@ -211,7 +192,7 @@ function Xonix:Create(titleName)
 		
 		local SliderFill = Instance.new("Frame")
 		SliderFill.Parent = SliderBar
-		SliderFill.BackgroundColor3 = Color3.fromRGB(100, 100, 255) -- Blue fill
+		SliderFill.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
 		SliderFill.Size = UDim2.new(0, 0, 1, 0)
 		
 		local SlideBtn = Instance.new("TextButton")
